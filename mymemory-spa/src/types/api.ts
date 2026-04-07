@@ -76,6 +76,15 @@ export interface ConfirmUrlPayload {
   keywords?: string[];
 }
 
+export interface CreateUrlPayload {
+  url: string;
+  title?: string;
+  summary?: string;
+  keywords?: string[];
+  ai_level?: AiLevel;
+  group_id?: number | null;
+}
+
 export interface UpdateMemoPayload {
   title?: string;
   content?: string;

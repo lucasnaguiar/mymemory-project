@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\MeController;
+use App\Http\Controllers\Api\V1\Memo\TextMemoController;
+use App\Http\Controllers\Api\V1\Memo\UrlMemoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,7 +34,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/workspace',     [MeController::class, 'updateWorkspace'])->name('workspace.update');
     });
 
+    // Memos — text
+    Route::prefix('memos/text')->name('memos.text.')->group(function () {
+        Route::post('/process', [TextMemoController::class, 'process'])->name('process');
+        Route::post('/confirm', [TextMemoController::class, 'confirm'])->name('confirm');
+        Route::post('/',        [TextMemoController::class, 'create'])->name('create');
+    });
+
+    // Memos — URL
+    Route::prefix('memos/url')->name('memos.url.')->group(function () {
+        Route::post('/process', [UrlMemoController::class, 'process'])->name('process');
+        Route::post('/confirm', [UrlMemoController::class, 'confirm'])->name('confirm');
+        Route::post('/',        [UrlMemoController::class, 'create'])->name('create');
+    });
+
     // Etapa 2 — Auth routes added here
-    // Etapa 4+ — Memos, Groups, Admin routes added progressively
+    // Etapa 5+ — Image/Audio/Video/Document routes added progressively
 
 });

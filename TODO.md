@@ -135,21 +135,21 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 - [x] Seletor de workspace + persistência via `PATCH me/workspace`; listar grupos com `GET me/workspace-groups`
 - [x] Preferências: `PATCH me/preferences` com UI alinhada a níveis de IA por tipo, som, confirmação pré-processamento, threshold OCR
 
-### Etapa 4 — Memos: texto e URL (process / confirm / atalho)
+### Etapa 4 — Memos: texto e URL (process / confirm / atalho) ✅
 
 **API**
 
-- [ ] Texto: `process`, `confirm`, criação direta
-- [ ] URL: `process`, `confirm`, criação direta
-- [ ] Integração com camada de IA (LLM) encapsulada em service/interface injetável
-- [ ] Enforcement de limites de plano e nível de IA (`semIA` / `basico` / `completo`)
-- [ ] Feature tests com mocks da IA
+- [x] Texto: `process`, `confirm`, criação direta
+- [x] URL: `process`, `confirm`, criação direta
+- [x] Integração com camada de IA (LLM) encapsulada em service/interface injetável
+- [x] Enforcement de limites de plano e nível de IA (`semIA` / `basico` / `completo`)
+- [x] Feature tests com mocks da IA
 
 **SPA (mymemory-spa)**
 
-- [ ] Fluxo em duas etapas **process → confirm** para texto e URL; atalho “sem revisão” se a API expuser
-- [ ] Páginas de revisão e painel inicial alinhados a `MemoTextReviewPage`, fluxo URL e componentes de revisão em `spa-old` (`MemoReviewChrome`, `MemoRegisterPanel`, etc. como referência visual/comportamental)
-- [ ] Services/hooks dedicados; estados de loading/erro e desabilitar ações quando limites do plano exigirem (dados de `me/usage` / preferências quando aplicável)
+- [x] Fluxo em duas etapas **process → confirm** para texto e URL; atalho “sem revisão” se a API expuser
+- [x] Páginas de revisão e painel inicial alinhados a `MemoTextReviewPage`, fluxo URL e componentes de revisão em `spa-old` (`MemoReviewChrome`, `MemoRegisterPanel`, etc. como referência visual/comportamental)
+- [x] Services/hooks dedicados; estados de loading/erro e desabilitar ações quando limites do plano exigirem (dados de `me/usage` / preferências quando aplicável)
 
 ### Etapa 5 — Memos: imagem, áudio, vídeo e documento
 

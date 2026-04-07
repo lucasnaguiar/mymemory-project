@@ -65,20 +65,20 @@ Marque com `[x]` ao concluir. Subitens são critérios de aceite mínimos.
 
 **API**
 
-- [ ] Prefixo versionado (`v1`) em todas as rotas da API documentadas
-- [ ] Helpers ou classe base para respostas JSON (`data` / `meta` / erro padronizado)
-- [ ] Registro de exceções de domínio + mapeamento HTTP no `Handler`
-- [ ] Estrutura de pastas: `Http/Requests`, `Http/Resources`, `Services`, `DTOs`, `Exceptions` (e `Policies` quando houver modelos)
-- [ ] Decisão documentada (README interno ou comentário em `config`): autenticação cookie `mm_access` + JWT vs Sanctum; **Policies** em todo caso
-- [ ] `GET /api/v1/health` (equivalente a `/api/health` da doc — ajustar path se a doc for atualizada para incluir versão)
+- [x] Prefixo versionado (`v1`) em todas as rotas da API documentadas
+- [x] Helpers ou classe base para respostas JSON (`data` / `meta` / erro padronizado)
+- [x] Registro de exceções de domínio + mapeamento HTTP no `Handler`
+- [x] Estrutura de pastas: `Http/Requests`, `Http/Resources`, `Services`, `DTOs`, `Exceptions` (e `Policies` quando houver modelos)
+- [x] Decisão documentada (README interno ou comentário em `config`): autenticação cookie `mm_access` + JWT vs Sanctum; **Policies** em todo caso
+- [x] `GET /api/v1/health` (equivalente a `/api/health` da doc — ajustar path se a doc for atualizada para incluir versão)
 
 **SPA (mymemory-spa)**
 
-- [ ] Reorganizar/adicionar pastas conforme estrutura alvo em `react-typescript-tailwind-boas-praticas.md` (`app/`, `features/`, `services/`, `types/`, etc.)
-- [ ] Cliente HTTP em `services/` (base URL via env: `VITE_API_URL` ou equivalente), `credentials: 'include'` se a API usar cookie de sessão; parser único para `{ data, meta }` e `{ error, message }`
-- [ ] React Router + provedor TanStack Query; `clsx` instalado e padrão de uso definido
-- [ ] Página ou componente de desenvolvimento que chama `GET /api/v1/health` para validar CORS, URL base e (se aplicável) cookies
-- [ ] Mapear telas do protótipo em `spa-old/src/pages/` para rotas futuras do SPA (tabela ou comentário em `app/` — sem copiar implementação legada)
+- [x] Reorganizar/adicionar pastas conforme estrutura alvo em `react-typescript-tailwind-boas-praticas.md` (`app/`, `features/`, `services/`, `types/`, etc.)
+- [x] Cliente HTTP em `services/` (base URL via env: `VITE_API_URL` ou equivalente), `credentials: 'include'` se a API usar cookie de sessão; parser único para `{ data, meta }` e `{ error, message }`
+- [x] React Router + provedor TanStack Query; `clsx` instalado e padrão de uso definido
+- [x] Página ou componente de desenvolvimento que chama `GET /api/v1/health` para validar CORS, URL base e (se aplicável) cookies
+- [x] Mapear telas do protótipo em `spa-old/src/pages/` para rotas futuras do SPA (tabela ou comentário em `app/` — sem copiar implementação legada)
 
 ### Etapa 1 — Modelagem de dados e migrations
 
@@ -260,7 +260,7 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 
 | Etapa | Concluída em | Observações |
 |-------|----------------|-------------|
-| 0 — Fundação | | |
+| 0 — Fundação | 2026-04-07 | Sanctum SPA cookie; ApiResponse; Exceptions + Handler; HealthController; routes/api.php v1 |
 | 1 — Modelagem | | |
 | 2 — Auth | | |
 | 3 — Me | | |
@@ -278,7 +278,7 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 
 | Etapa | Concluída em | Observações |
 |-------|----------------|-------------|
-| 0 — Fundação | | |
+| 0 — Fundação | 2026-04-07 | Tailwind v4; React Router; TanStack Query; cliente HTTP (axios + ApiError); HealthCheckPage; mapa de rotas |
 | 1 — Tipos / contratos | | |
 | 2 — Auth | | |
 | 3 — Me / workspace / preferências | | |

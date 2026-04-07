@@ -84,20 +84,20 @@ Marque com `[x]` ao concluir. Subitens são critérios de aceite mínimos.
 
 **API**
 
-- [ ] Nomes de tabelas, colunas, índices e FKs em **inglês** + **snake_case** (ver *Idioma do código* — API)
-- [ ] Modelos e migrations para: usuários, planos (individual e grupo), assinaturas/limites, grupos, membros, convites, memos (6 tipos + metadados), arquivos/storage keys, soft delete
-- [ ] Tabelas de uso (créditos API, downloads, armazenamento) alinhadas aos limites da documentação
-- [ ] Preferências de usuário (níveis de IA por tipo, confirmação antes de processar, som, threshold OCR)
-- [ ] Workspace ativo (contexto pessoal vs grupo)
-- [ ] Contexto estruturado: categorias, subcategorias, campos (escopo grupo/global, soft delete)
-- [ ] Tokens: verificação de e-mail (48h), reset de senha (1h)
-- [ ] Configurações admin: roteamento pipeline documentos (JSON), settings de mídia por plano
-- [ ] Índices e FKs; transações nas seeders críticas se aplicável
+- [x] Nomes de tabelas, colunas, índices e FKs em **inglês** + **snake_case** (ver *Idioma do código* — API)
+- [x] Modelos e migrations para: usuários, planos (individual e grupo), assinaturas/limites, grupos, membros, convites, memos (6 tipos + metadados), arquivos/storage keys, soft delete
+- [x] Tabelas de uso (créditos API, downloads, armazenamento) alinhadas aos limites da documentação
+- [x] Preferências de usuário (níveis de IA por tipo, confirmação antes de processar, som, threshold OCR)
+- [x] Workspace ativo (contexto pessoal vs grupo)
+- [x] Contexto estruturado: categorias, subcategorias, campos (escopo grupo/global, soft delete)
+- [x] Tokens: verificação de e-mail (48h), reset de senha (1h)
+- [x] Configurações admin: roteamento pipeline documentos (JSON), settings de mídia por plano
+- [x] Índices e FKs; transações nas seeders críticas se aplicável
 
 **SPA (mymemory-spa)**
 
-- [ ] Em `types/`, esboçar tipos TypeScript para entidades principais (User, Plan, Memo, Group, Workspace, Preferences, …) alinhados ao modelo da API; refinar quando Resources estabilizarem
-- [ ] Opcional: schemas Zod/Yup espelhando payloads de register/login e erros de validação
+- [x] Em `types/`, esboçar tipos TypeScript para entidades principais (User, Plan, Memo, Group, Workspace, Preferences, …) alinhados ao modelo da API; refinar quando Resources estabilizarem
+- [x] Opcional: schemas Zod/Yup espelhando payloads de register/login e erros de validação
 
 ### Etapa 2 — Autenticação e rotas públicas de auth
 
@@ -261,7 +261,7 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 | Etapa | Concluída em | Observações |
 |-------|----------------|-------------|
 | 0 — Fundação | 2026-04-07 | Sanctum SPA cookie; ApiResponse; Exceptions + Handler; HealthController; routes/api.php v1 |
-| 1 — Modelagem | | |
+| 1 — Modelagem | 2026-04-07 | 17 migrations + 14 models; subscription_plans, groups, memos (6 tipos), memo_context, plan_media_settings, document_ai_routing |
 | 2 — Auth | | |
 | 3 — Me | | |
 | 4 — Memos texto/URL | | |
@@ -279,7 +279,7 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 | Etapa | Concluída em | Observações |
 |-------|----------------|-------------|
 | 0 — Fundação | 2026-04-07 | Tailwind v4; React Router; TanStack Query; cliente HTTP (axios + ApiError); HealthCheckPage; mapa de rotas |
-| 1 — Tipos / contratos | | |
+| 1 — Tipos / contratos | 2026-04-07 | types/models.ts, types/api.ts, types/auth.ts com Zod schemas (register, login, forgot/reset password, verify email) |
 | 2 — Auth | | |
 | 3 — Me / workspace / preferências | | |
 | 4 — Memos texto/URL | | |

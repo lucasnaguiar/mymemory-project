@@ -1,0 +1,297 @@
+# Plano de desenvolvimento — API MyMemory + front-end (mymemory-spa)
+
+Este arquivo organiza o desenvolvimento da **API** Laravel descrita em [`../system-documentation.md`](../system-documentation.md) (`mymemory-api`), e do **front-end** em [`../mymemory-spa/`](../mymemory-spa/), obedecendo a [`boas_praticas.md`](boas_praticas.md) (API) e a [`../mymemory-spa/react-typescript-tailwind-boas-praticas.md`](../mymemory-spa/react-typescript-tailwind-boas-praticas.md) (SPA).
+
+**Referência de UI/UX:** o diretório [`../spa-old/`](../spa-old/) contém o protótipo anterior — usar **apenas** como guia de fluxos, hierarquia de telas e consistência visual ao implementar o `mymemory-spa`. Não reutilizar código do protótipo como base arquitetural; reimplementar no SPA alinhado às boas práticas.
+
+---
+
+## Convenções — API (Laravel)
+
+**Checklist por entrega (back-end):**
+
+- Controllers apenas orquestram; regras em **Services**
+- Validação em **Form Requests**
+- Troca de dados entre camadas com **DTOs** (sem arrays soltos)
+- Respostas com **API Resources** (nunca Model direto)
+- **PSR-1 / PSR-4 / PSR-12**; uma classe por arquivo; 4 espaços
+- **Exceções customizadas** + tratamento centralizado no `Handler`
+- **Migrations**; **transactions** em operações críticas
+- Evitar **N+1**; **eager loading** onde fizer sentido
+- Formato de sucesso: `{ "data": {}, "meta": {} }`; erro: `{ "error": true, "message": "..." }`
+- **Versionamento** de rotas (`/api/v1/...` ou prefixo equivalente)
+- **Policies** para autorização; autenticação alinhada à especificação (cookie `mm_access`, JWT 7 dias) usando padrões Laravel de forma segura (avaliar Sanctum SPA / tokens stateful vs JWT custom — documentar decisão na Etapa 0)
+- **Testes**: Feature (fluxos HTTP) + Unit (services/DTOs críticos)
+
+**Idioma do código (inglês — práticas universais) — API:**
+
+- **Arquivos e namespaces:** nomes em inglês; classes PHP em `PascalCase` alinhadas ao PSR-4 (ex.: `MemoProcessService.php`, não `ProcessarMemoService.php`).
+- **Variáveis, parâmetros, propriedades e métodos:** inglês; `camelCase` para membros de instância e locais; nomes descritivos, sem abreviações obscuras.
+- **Constantes:** inglês; `UPPER_SNAKE_CASE` quando aplicável (PSR-1).
+- **Banco de dados:** tabelas e colunas em inglês; **snake_case** para nomes SQL (padrão Laravel e interoperabilidade). Chaves estrangeiras e índices seguem o mesmo idioma.
+- **Rotas e query params da API:** manter inglês nos segmentos técnicos; se a documentação do produto usar paths específicos, espelhar na implementação versionada sem misturar português em nomes internos (controllers, actions, policies).
+- **Comentários e mensagens:** comentários no código preferencialmente em inglês; mensagens de erro expostas ao cliente podem seguir regra de produto (ex.: i18n futuro), mas **identificadores** (`error_code`, slugs) em inglês.
+
+---
+
+## Convenções — front-end (mymemory-spa)
+
+**Estrutura alvo** (adaptar o projeto Vite existente):
+
+`src/app/` · `components/` · `features/` · `hooks/` · `services/` · `stores/` (se necessário) · `types/` · `utils/` · `styles/` · `main.tsx`
+
+**Checklist por entrega (front-end):**
+
+- Componentes funcionais e hooks; **sem lógica pesada no JSX**; componentes pequenos e coesos
+- **TypeScript:** evitar `any`; tipar props, respostas de API e erros; preferir `unknown` quando necessário
+- **Comunicação com API:** centralizar em `services/`; **sem** `fetch` espalhado em páginas; tipar request/response; tratamento global de erros (`error` + `message` da API)
+- **TanStack Query (React Query)** para cache, loading e revalidação; **clsx** (ou equivalente) + Tailwind utilitário; evitar duplicação de classes
+- **SOLID / Clean Code** no front: uma responsabilidade por módulo; dependência de abstrações (ex.: cliente HTTP injetável ou encapsulado)
+- **Testes:** Jest + React Testing Library nos fluxos críticos
+- **Validação de formulários:** Zod ou Yup (sugerido no guia SPA), alinhada aos contratos da API
+- **Nomenclatura em inglês:** componentes e arquivos de componente `PascalCase`; funções/variáveis `camelCase`; tipos e enums em inglês (alinhado à API)
+
+**Integração com a API em cada etapa:** sempre que o back-end expuser o endpoint correspondente, o front deve consumir a **versão real** (`/api/v1/...`), com mocks/stubs apenas até o endpoint existir (documentar no PR ou na coluna de observações do registro).
+
+**Nota:** A documentação do sistema cita Fastify na visão geral; a implementação da API aqui é **Laravel**, conforme `boas_praticas.md`.
+
+---
+
+## Etapas
+
+Marque com `[x]` ao concluir. Subitens são critérios de aceite mínimos.
+
+### Etapa 0 — Fundação técnica e contrato da API
+
+**API**
+
+- [ ] Prefixo versionado (`v1`) em todas as rotas da API documentadas
+- [ ] Helpers ou classe base para respostas JSON (`data` / `meta` / erro padronizado)
+- [ ] Registro de exceções de domínio + mapeamento HTTP no `Handler`
+- [ ] Estrutura de pastas: `Http/Requests`, `Http/Resources`, `Services`, `DTOs`, `Exceptions` (e `Policies` quando houver modelos)
+- [ ] Decisão documentada (README interno ou comentário em `config`): autenticação cookie `mm_access` + JWT vs Sanctum; **Policies** em todo caso
+- [ ] `GET /api/v1/health` (equivalente a `/api/health` da doc — ajustar path se a doc for atualizada para incluir versão)
+
+**SPA (mymemory-spa)**
+
+- [ ] Reorganizar/adicionar pastas conforme estrutura alvo em `react-typescript-tailwind-boas-praticas.md` (`app/`, `features/`, `services/`, `types/`, etc.)
+- [ ] Cliente HTTP em `services/` (base URL via env: `VITE_API_URL` ou equivalente), `credentials: 'include'` se a API usar cookie de sessão; parser único para `{ data, meta }` e `{ error, message }`
+- [ ] React Router + provedor TanStack Query; `clsx` instalado e padrão de uso definido
+- [ ] Página ou componente de desenvolvimento que chama `GET /api/v1/health` para validar CORS, URL base e (se aplicável) cookies
+- [ ] Mapear telas do protótipo em `spa-old/src/pages/` para rotas futuras do SPA (tabela ou comentário em `app/` — sem copiar implementação legada)
+
+### Etapa 1 — Modelagem de dados e migrations
+
+**API**
+
+- [ ] Nomes de tabelas, colunas, índices e FKs em **inglês** + **snake_case** (ver *Idioma do código* — API)
+- [ ] Modelos e migrations para: usuários, planos (individual e grupo), assinaturas/limites, grupos, membros, convites, memos (6 tipos + metadados), arquivos/storage keys, soft delete
+- [ ] Tabelas de uso (créditos API, downloads, armazenamento) alinhadas aos limites da documentação
+- [ ] Preferências de usuário (níveis de IA por tipo, confirmação antes de processar, som, threshold OCR)
+- [ ] Workspace ativo (contexto pessoal vs grupo)
+- [ ] Contexto estruturado: categorias, subcategorias, campos (escopo grupo/global, soft delete)
+- [ ] Tokens: verificação de e-mail (48h), reset de senha (1h)
+- [ ] Configurações admin: roteamento pipeline documentos (JSON), settings de mídia por plano
+- [ ] Índices e FKs; transações nas seeders críticas se aplicável
+
+**SPA (mymemory-spa)**
+
+- [ ] Em `types/`, esboçar tipos TypeScript para entidades principais (User, Plan, Memo, Group, Workspace, Preferences, …) alinhados ao modelo da API; refinar quando Resources estabilizarem
+- [ ] Opcional: schemas Zod/Yup espelhando payloads de register/login e erros de validação
+
+### Etapa 2 — Autenticação e rotas públicas de auth
+
+Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `forgot-password`, `reset-password`.
+
+**API**
+
+- [ ] Form Requests + DTOs + Services + Resources para cada operação
+- [ ] Hash de senha, rate limiting onde fizer sentido (esqueci senha / login)
+- [ ] Envio de e-mail (filas recomendadas) para verificação e reset
+- [ ] Logout limpando cookie/token conforme decisão da Etapa 0
+- [ ] Feature tests dos fluxos felizes e erros de validação
+
+**SPA (mymemory-spa)**
+
+- [ ] `features/auth` + páginas: Login, Register (listar planos individuais via API), ForgotPassword, ResetPassword, VerifyEmail — fluxos espelhados em `spa-old` (UI/UX de referência)
+- [ ] `services` tipados para auth; rotas protegidas vs públicas; após login, estado do usuário via React Query ou store mínima conforme guia
+- [ ] Testes RTL: validação visível, submit e tratamento de erro da API
+
+### Etapa 3 — `/api/me/*`
+
+**API**
+
+- [ ] `GET me` — perfil
+- [ ] `GET me/usage` — consumo vs limites
+- [ ] `GET me/media-limits` — limites por tipo de mídia
+- [ ] `PATCH me/preferences`
+- [ ] `GET me/workspace-groups` + `PATCH me/workspace`
+- [ ] Policies garantindo que o recurso é sempre do usuário autenticado
+- [ ] Feature tests
+
+**SPA (mymemory-spa)**
+
+- [ ] Integrar perfil, usage e media-limits no shell (ex.: header/dashboard) e na `UserPreferencesPage` (referência: `spa-old/src/pages/UserPreferencesPage.tsx`)
+- [ ] Seletor de workspace + persistência via `PATCH me/workspace`; listar grupos com `GET me/workspace-groups`
+- [ ] Preferências: `PATCH me/preferences` com UI alinhada a níveis de IA por tipo, som, confirmação pré-processamento, threshold OCR
+
+### Etapa 4 — Memos: texto e URL (process / confirm / atalho)
+
+**API**
+
+- [ ] Texto: `process`, `confirm`, criação direta
+- [ ] URL: `process`, `confirm`, criação direta
+- [ ] Integração com camada de IA (LLM) encapsulada em service/interface injetável
+- [ ] Enforcement de limites de plano e nível de IA (`semIA` / `basico` / `completo`)
+- [ ] Feature tests com mocks da IA
+
+**SPA (mymemory-spa)**
+
+- [ ] Fluxo em duas etapas **process → confirm** para texto e URL; atalho “sem revisão” se a API expuser
+- [ ] Páginas de revisão e painel inicial alinhados a `MemoTextReviewPage`, fluxo URL e componentes de revisão em `spa-old` (`MemoReviewChrome`, `MemoRegisterPanel`, etc. como referência visual/comportamental)
+- [ ] Services/hooks dedicados; estados de loading/erro e desabilitar ações quando limites do plano exigirem (dados de `me/usage` / preferências quando aplicável)
+
+### Etapa 5 — Memos: imagem, áudio, vídeo e documento
+
+**API**
+
+- [ ] Upload, storage (S3 ou disco local conforme config), validação de tamanho/tipo por plano
+- [ ] Imagem: OCR + pipeline visão + resumo (services separados, DTOs entre etapas)
+- [ ] Áudio/Vídeo: Whisper + chunking quando aplicável
+- [ ] Documento: PDF/DOCX/MSG/EML → extração + resumo; roteamento JSON admin
+- [ ] `process` e `confirm` para cada tipo; tratamento de jobs assíncronos se necessário (fila + status)
+- [ ] Feature tests principais; mocks de provedores externos
+
+**SPA (mymemory-spa)**
+
+- [ ] Upload multipart tipado; páginas de revisão: imagem, áudio, vídeo, documento (`spa-old`: `MemoImageReviewPage`, `MemoAudioReviewPage`, `MemoVideoReviewPage`, `MemoDocumentReviewPage`)
+- [ ] Progresso e mensagens de erro; respeitar `me/media-limits` na UI (tamanho/tipo antes do envio)
+- [ ] Se a API usar job assíncrono: polling ou subscription conforme contrato exposto pelo back-end
+
+### Etapa 6 — Memos: upload genérico, listagem, busca e CRUD
+
+**API**
+
+- [ ] `POST upload` (detecção de tipo)
+- [ ] `GET recent` com `limit` e `groupId`
+- [ ] `POST search` (AND/OR, filtros data/autor/grupo, highlight na resposta)
+- [ ] `POST search/synonyms` (LLM)
+- [ ] `GET search/authors`
+- [ ] `GET :id`, `GET :id/file`, `PATCH :id`, `DELETE :id` (soft delete)
+- [ ] Autorização: memos pessoais vs grupo (Policies + queries escopadas)
+- [ ] Evitar N+1 em listagens e busca
+- [ ] Feature tests de busca e permissões
+
+**SPA (mymemory-spa)**
+
+- [ ] Home/dashboard com memos recentes (`GET recent`) e cartões alinhados a `spa-old` (`MemoCard*`, `RecentMemos`)
+- [ ] `MemoSearchPage`: busca com AND/OR, filtros, autores, sinônimos via API; renderizar **highlight** retornado pela API
+- [ ] `MemoEditPage`, exclusão (soft delete), download (`GET :id/file` ou rota de mídia final)
+- [ ] Upload genérico (`POST upload`) integrado ao fluxo de criação quando fizer sentido na UX
+
+### Etapa 7 — Grupos, planos de grupo e convites
+
+**API**
+
+- [ ] `GET group-plans` (público)
+- [ ] `POST groups` (plano de grupo)
+- [ ] `GET groups/:id/owner-panel`
+- [ ] `POST groups/:id/invites` (papel editor/viewer)
+- [ ] `POST group-invites/accept` (token)
+- [ ] Policies para dono vs membro vs viewer
+- [ ] Feature tests
+
+**SPA (mymemory-spa)**
+
+- [ ] `GroupCreatePage` com `GET group-plans` + `POST groups`
+- [ ] `GroupOwnerPanelPage`: painel do dono e convites (`spa-old` como referência)
+- [ ] `GroupInviteAcceptPage`: aceite via token na URL/query
+- [ ] Garantir que o workspace (Etapa 3) reflete grupos disponíveis após criar/aceitar
+
+### Etapa 8 — Contexto de memo (categorias / subcategorias / campos)
+
+**API**
+
+- [ ] `memo-context/groups`, `editor-meta`, `structure`, `groups/:groupId/structure`
+- [ ] CRUD com soft delete: categorias, subcategorias, campos
+- [ ] Filtro opcional por tipo de mídia onde a doc exigir
+- [ ] Feature tests e autorização por grupo/admin
+
+**SPA (mymemory-spa)**
+
+- [ ] `MemoContextPage`: árvore e CRUD completo consumindo a API; `editor-meta` para habilitar/desabilitar ações na UI
+- [ ] UX alinhada a `spa-old/src/pages/MemoContextPage.tsx` (referência)
+
+### Etapa 9 — Admin (`role admin`)
+
+**API**
+
+- [ ] CRUD `subscription-plans`
+- [ ] `media-settings` por plano (GET/PUT)
+- [ ] `document-ai-routing` (GET/PUT)
+- [ ] `cost-report` (query params período, tipo, plano)
+- [ ] `soft-deleted-memos/monthly-summary` + `hard-delete-month`
+- [ ] Middleware/gate `admin` + Policies
+- [ ] Feature tests restritos a admin
+
+**SPA (mymemory-spa)**
+
+- [ ] Rotas `/admin` protegidas no front (além do 403 da API): `AdminPage`, `AdminMediaSettingsPage`, `AdminDocumentAiPage` (referência `spa-old`)
+- [ ] Relatório de custos com filtros; fluxo de hard delete por mês com confirmação explícita (destrutivo)
+
+### Etapa 10 — Sistema, mídia local e hardening
+
+**API**
+
+- [ ] `GET /media/:authorId/:fileName` protegido (autenticação + autorização)
+- [ ] Revisão de CORS, cookies seguros (httpOnly, SameSite), headers de segurança
+- [ ] Logging e monitoração de erros em operações de IA e storage
+- [ ] Suite de testes: objetivo de cobrir fluxos críticos auth + memo + grupo + admin
+
+**SPA (mymemory-spa)**
+
+- [ ] Componentes de preview/download usando URLs protegidas da API; mesma política de credenciais que o restante do app
+- [ ] Passada de UX: loading skeletons, erros de rede, estados vazios; checagem de regressão nos fluxos principais
+- [ ] Ampliar testes RTL/E2E (se adotado) nos caminhos: login → criar memo texto → buscar → logout
+
+---
+
+## Registro de conclusão — API
+
+| Etapa | Concluída em | Observações |
+|-------|----------------|-------------|
+| 0 — Fundação | | |
+| 1 — Modelagem | | |
+| 2 — Auth | | |
+| 3 — Me | | |
+| 4 — Memos texto/URL | | |
+| 5 — Memos mídia/doc | | |
+| 6 — Busca/CRUD | | |
+| 7 — Grupos | | |
+| 8 — Memo context | | |
+| 9 — Admin | | |
+| 10 — Sistema/hardening | | |
+
+---
+
+## Registro de conclusão — front-end (mymemory-spa)
+
+| Etapa | Concluída em | Observações |
+|-------|----------------|-------------|
+| 0 — Fundação | | |
+| 1 — Tipos / contratos | | |
+| 2 — Auth | | |
+| 3 — Me / workspace / preferências | | |
+| 4 — Memos texto/URL | | |
+| 5 — Memos mídia/doc | | |
+| 6 — Busca/CRUD | | |
+| 7 — Grupos | | |
+| 8 — Memo context | | |
+| 9 — Admin | | |
+| 10 — Mídia / hardening UX-testes | | |
+
+---
+
+## Referência rápida: total de endpoints (documentação)
+
+**62 endpoints** — conferir cobertura ao final da Etapa 10 (lista em `system-documentation.md`).

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\HealthController;
+use App\Http\Controllers\Api\V1\MeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,8 +18,21 @@ use Illuminate\Support\Facades\Route;
 Route::get('/health', HealthController::class)->name('health');
 
 // ---------------------------------------------------------------------------
-// Authenticated routes (Sanctum stateful guard) — added in Etapa 2+
+// Authenticated routes (Sanctum stateful guard)
 // ---------------------------------------------------------------------------
-// Route::middleware('auth:sanctum')->group(function () {
-//     ...
-// });
+Route::middleware('auth:sanctum')->group(function () {
+
+    // Me — profile, usage, preferences, workspace
+    Route::prefix('me')->name('me.')->group(function () {
+        Route::get('/',                [MeController::class, 'profile'])->name('profile');
+        Route::get('/usage',           [MeController::class, 'usage'])->name('usage');
+        Route::get('/media-limits',    [MeController::class, 'mediaLimits'])->name('media-limits');
+        Route::patch('/preferences',   [MeController::class, 'updatePreferences'])->name('preferences.update');
+        Route::get('/workspace-groups',[MeController::class, 'workspaceGroups'])->name('workspace-groups');
+        Route::patch('/workspace',     [MeController::class, 'updateWorkspace'])->name('workspace.update');
+    });
+
+    // Etapa 2 — Auth routes added here
+    // Etapa 4+ — Memos, Groups, Admin routes added progressively
+
+});

@@ -121,19 +121,19 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 
 **API**
 
-- [ ] `GET me` — perfil
-- [ ] `GET me/usage` — consumo vs limites
-- [ ] `GET me/media-limits` — limites por tipo de mídia
-- [ ] `PATCH me/preferences`
-- [ ] `GET me/workspace-groups` + `PATCH me/workspace`
-- [ ] Policies garantindo que o recurso é sempre do usuário autenticado
-- [ ] Feature tests
+- [x] `GET me` — perfil
+- [x] `GET me/usage` — consumo vs limites
+- [x] `GET me/media-limits` — limites por tipo de mídia
+- [x] `PATCH me/preferences`
+- [x] `GET me/workspace-groups` + `PATCH me/workspace`
+- [x] Policies garantindo que o recurso é sempre do usuário autenticado
+- [x] Feature tests
 
 **SPA (mymemory-spa)**
 
-- [ ] Integrar perfil, usage e media-limits no shell (ex.: header/dashboard) e na `UserPreferencesPage` (referência: `spa-old/src/pages/UserPreferencesPage.tsx`)
-- [ ] Seletor de workspace + persistência via `PATCH me/workspace`; listar grupos com `GET me/workspace-groups`
-- [ ] Preferências: `PATCH me/preferences` com UI alinhada a níveis de IA por tipo, som, confirmação pré-processamento, threshold OCR
+- [x] Integrar perfil, usage e media-limits no shell (ex.: header/dashboard) e na `UserPreferencesPage` (referência: `spa-old/src/pages/UserPreferencesPage.tsx`)
+- [x] Seletor de workspace + persistência via `PATCH me/workspace`; listar grupos com `GET me/workspace-groups`
+- [x] Preferências: `PATCH me/preferences` com UI alinhada a níveis de IA por tipo, som, confirmação pré-processamento, threshold OCR
 
 ### Etapa 4 — Memos: texto e URL (process / confirm / atalho)
 
@@ -263,7 +263,7 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 | 0 — Fundação | 2026-04-07 | Sanctum SPA cookie; ApiResponse; Exceptions + Handler; HealthController; routes/api.php v1 |
 | 1 — Modelagem | 2026-04-07 | 17 migrations + 14 models; subscription_plans, groups, memos (6 tipos), memo_context, plan_media_settings, document_ai_routing |
 | 2 — Auth | | |
-| 3 — Me | | |
+| 3 — Me | 2026-04-07 | MeController (6 endpoints); DTOs, Requests, Resources, Services, UserPreferencePolicy; Sanctum instalado; 12 feature tests |
 | 4 — Memos texto/URL | | |
 | 5 — Memos mídia/doc | | |
 | 6 — Busca/CRUD | | |
@@ -281,7 +281,7 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 | 0 — Fundação | 2026-04-07 | Tailwind v4; React Router; TanStack Query; cliente HTTP (axios + ApiError); HealthCheckPage; mapa de rotas |
 | 1 — Tipos / contratos | 2026-04-07 | types/models.ts, types/api.ts, types/auth.ts com Zod schemas (register, login, forgot/reset password, verify email) |
 | 2 — Auth | | |
-| 3 — Me / workspace / preferências | | |
+| 3 — Me / workspace / preferências | 2026-04-07 | meService.ts; hooks useMe/useUsage/useMediaLimits/usePreferences/useWorkspaceGroups; UserPreferencesPage (tabs prefs/uso); WorkspaceSelector |
 | 4 — Memos texto/URL | | |
 | 5 — Memos mídia/doc | | |
 | 6 — Busca/CRUD | | |

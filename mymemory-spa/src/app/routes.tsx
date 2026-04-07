@@ -1,6 +1,8 @@
 import { lazy } from 'react';
 import { Navigate, type RouteObject } from 'react-router-dom';
 
+const UserPreferencesPage = lazy(() => import('../features/me/pages/UserPreferencesPage'));
+
 /**
  * Route map — mymemory-spa
  *
@@ -47,6 +49,9 @@ export const routes: RouteObject[] = [
   // Dev
   { path: '/dev/health', element: <HealthCheckPage /> },
 
-  // Fallback — redirect everything to home until pages are implemented
+  // Me / account
+  { path: '/preferences', element: <UserPreferencesPage /> },
+
+  // Fallback — redirect everything to health until more pages are implemented
   { path: '*', element: <Navigate to="/dev/health" replace /> },
 ];

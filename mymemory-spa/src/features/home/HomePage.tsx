@@ -35,6 +35,7 @@ export default function HomePage() {
         <nav className="flex items-center gap-4 text-sm">
           <Link to="/buscar" className="text-gray-600 hover:text-indigo-600">Buscar</Link>
           <Link to="/grupos/novo" className="text-gray-600 hover:text-indigo-600">Criar grupo</Link>
+          <Link to="/memo-context" className="text-gray-600 hover:text-indigo-600">Contexto</Link>
           <Link to="/preferences" className="text-gray-600 hover:text-indigo-600">Preferências</Link>
         </nav>
       </header>

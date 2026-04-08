@@ -208,19 +208,19 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 - [x] `GroupInviteAcceptPage`: aceite via token na URL/query
 - [x] Garantir que o workspace (Etapa 3) reflete grupos disponíveis após criar/aceitar
 
-### Etapa 8 — Contexto de memo (categorias / subcategorias / campos)
+### Etapa 8 — Contexto de memo (categorias / subcategorias / campos) ✅
 
 **API**
 
-- [ ] `memo-context/groups`, `editor-meta`, `structure`, `groups/:groupId/structure`
-- [ ] CRUD com soft delete: categorias, subcategorias, campos
-- [ ] Filtro opcional por tipo de mídia onde a doc exigir
-- [ ] Feature tests e autorização por grupo/admin
+- [x] `memo-context/groups`, `editor-meta`, `structure`, `groups/:groupId/structure`
+- [x] CRUD com soft delete: categorias, subcategorias, campos
+- [x] Filtro opcional por tipo de mídia onde a doc exigir
+- [x] Feature tests e autorização por grupo/admin
 
 **SPA (mymemory-spa)**
 
-- [ ] `MemoContextPage`: árvore e CRUD completo consumindo a API; `editor-meta` para habilitar/desabilitar ações na UI
-- [ ] UX alinhada a `spa-old/src/pages/MemoContextPage.tsx` (referência)
+- [x] `MemoContextPage`: árvore e CRUD completo consumindo a API; `editor-meta` para habilitar/desabilitar ações na UI
+- [x] UX alinhada a `spa-old/src/pages/MemoContextPage.tsx` (referência)
 
 ### Etapa 9 — Admin (`role admin`)
 

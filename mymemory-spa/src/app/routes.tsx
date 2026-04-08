@@ -13,6 +13,7 @@ const MemoEditPage           = lazy(() => import('../features/memos/pages/MemoEd
 const GroupCreatePage        = lazy(() => import('../features/groups/pages/GroupCreatePage'));
 const GroupOwnerPanelPage    = lazy(() => import('../features/groups/pages/GroupOwnerPanelPage'));
 const GroupInviteAcceptPage  = lazy(() => import('../features/groups/pages/GroupInviteAcceptPage'));
+const MemoContextPage        = lazy(() => import('../features/memoContext/pages/MemoContextPage'));
 
 /**
  * Route map — mymemory-spa
@@ -81,4 +82,7 @@ export const routes: RouteObject[] = [
   { path: '/grupos/novo',         element: <GroupCreatePage /> },
   { path: '/grupos/:id/painel',   element: <GroupOwnerPanelPage /> },
   { path: '/convite/grupo',       element: <GroupInviteAcceptPage /> },
+
+  // Memo context
+  { path: '/memo-context', element: <MemoContextPage /> },
 ];

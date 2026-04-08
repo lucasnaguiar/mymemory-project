@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Group\GroupController;
 use App\Http\Controllers\Api\V1\Group\GroupPlanController;
+use App\Http\Controllers\Api\V1\MemoContext\MemoContextController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\Memo\AudioMemoController;
@@ -101,7 +102,27 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/groups/{id}/invites',           [GroupController::class, 'invite'])->name('groups.invites.store');
     Route::post('/group-invites/accept',          [GroupController::class, 'acceptInvite'])->name('group-invites.accept');
 
+    // Memo context — structure, editor meta, CRUD
+    Route::prefix('memo-context')->name('memo-context.')->group(function () {
+        Route::get('/groups',                                     [MemoContextController::class, 'groups'])->name('groups');
+        Route::get('/editor-meta',                                [MemoContextController::class, 'editorMeta'])->name('editor-meta');
+        Route::get('/structure',                                  [MemoContextController::class, 'structure'])->name('structure');
+        Route::get('/groups/{groupId}/structure',                 [MemoContextController::class, 'groupStructure'])->name('group-structure');
+
+        Route::post('/categories',                                [MemoContextController::class, 'createCategory'])->name('categories.store');
+        Route::patch('/categories/{id}',                          [MemoContextController::class, 'updateCategory'])->name('categories.update');
+        Route::delete('/categories/{id}',                         [MemoContextController::class, 'deleteCategory'])->name('categories.destroy');
+
+        Route::post('/categories/{categoryId}/subcategories',     [MemoContextController::class, 'createSubcategory'])->name('subcategories.store');
+        Route::patch('/subcategories/{id}',                       [MemoContextController::class, 'updateSubcategory'])->name('subcategories.update');
+        Route::delete('/subcategories/{id}',                      [MemoContextController::class, 'deleteSubcategory'])->name('subcategories.destroy');
+
+        Route::post('/categories/{categoryId}/fields',            [MemoContextController::class, 'createField'])->name('fields.store');
+        Route::patch('/fields/{id}',                              [MemoContextController::class, 'updateField'])->name('fields.update');
+        Route::delete('/fields/{id}',                             [MemoContextController::class, 'deleteField'])->name('fields.destroy');
+    });
+
     // Etapa 2 — Auth routes added here
-    // Etapa 8+ — Context, admin routes added progressively
+    // Etapa 9+ — Admin routes added progressively
 
 });

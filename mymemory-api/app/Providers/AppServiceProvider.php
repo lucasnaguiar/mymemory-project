@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use App\Contracts\AiProviderInterface;
+use App\Models\Memo;
+use App\Policies\MemoPolicy;
 use App\Services\Ai\OpenAiProvider;
 use App\Services\Ai\StubAiProvider;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,5 +26,8 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
-    public function boot(): void {}
+    public function boot(): void
+    {
+        Gate::policy(Memo::class, MemoPolicy::class);
+    }
 }

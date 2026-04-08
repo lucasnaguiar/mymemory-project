@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { Navigate, type RouteObject } from 'react-router-dom';
+import { type RouteObject } from 'react-router-dom';
 
 const UserPreferencesPage    = lazy(() => import('../features/me/pages/UserPreferencesPage'));
 const MemoTextReviewPage     = lazy(() => import('../features/memos/pages/MemoTextReviewPage'));
@@ -7,6 +7,9 @@ const MemoImageReviewPage    = lazy(() => import('../features/memos/pages/MemoIm
 const MemoAudioReviewPage    = lazy(() => import('../features/memos/pages/MemoAudioReviewPage'));
 const MemoVideoReviewPage    = lazy(() => import('../features/memos/pages/MemoVideoReviewPage'));
 const MemoDocumentReviewPage = lazy(() => import('../features/memos/pages/MemoDocumentReviewPage'));
+const HomePage               = lazy(() => import('../features/home/HomePage'));
+const MemoSearchPage         = lazy(() => import('../features/memos/pages/MemoSearchPage'));
+const MemoEditPage           = lazy(() => import('../features/memos/pages/MemoEditPage'));
 
 /**
  * Route map — mymemory-spa
@@ -51,6 +54,9 @@ const MemoDocumentReviewPage = lazy(() => import('../features/memos/pages/MemoDo
 const HealthCheckPage = lazy(() => import('../features/dev/HealthCheckPage'));
 
 export const routes: RouteObject[] = [
+  // Home / dashboard
+  { path: '/', element: <HomePage /> },
+
   // Dev
   { path: '/dev/health', element: <HealthCheckPage /> },
 
@@ -64,6 +70,7 @@ export const routes: RouteObject[] = [
   { path: '/memos/video/review',    element: <MemoVideoReviewPage /> },
   { path: '/memos/document/review', element: <MemoDocumentReviewPage /> },
 
-  // Fallback — redirect everything to health until more pages are implemented
-  { path: '*', element: <Navigate to="/dev/health" replace /> },
+  // Memos — search and CRUD
+  { path: '/buscar',            element: <MemoSearchPage /> },
+  { path: '/memos/:id/editar', element: <MemoEditPage /> },
 ];

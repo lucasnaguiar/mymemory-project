@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -54,5 +55,39 @@ class Memo extends Model
     public function isDraft(): bool
     {
         return $this->status === 'draft';
+    }
+
+    // -------------------------------------------------------------------------
+    // Scopes
+    // -------------------------------------------------------------------------
+
+    public function scopeConfirmed(Builder $query): Builder
+    {
+        return $query->where('status', 'confirmed');
+    }
+
+    /**
+     * Scope memos accessible by the given user.
+     * If $groupId is set: all confirmed memos for that group where user is owner or member.
+     * Otherwise: only the user's own personal memos.
+     */
+    public function scopeAccessibleBy(Builder $query, \App\Models\User $user, ?int $groupId = null): Builder
+    {
+        if ($groupId !== null) {
+            return $query->where('group_id', $groupId)
+                ->where(function (Builder $q) use ($user, $groupId) {
+                    $q->where('user_id', $user->id)
+                        ->orWhereExists(fn ($sub) => $sub->selectRaw('1')
+                            ->from('group_members')
+                            ->where('group_id', $groupId)
+                            ->where('user_id', $user->id))
+                        ->orWhereExists(fn ($sub) => $sub->selectRaw('1')
+                            ->from('groups')
+                            ->where('id', $groupId)
+                            ->where('owner_user_id', $user->id));
+                });
+        }
+
+        return $query->whereNull('group_id')->where('user_id', $user->id);
     }
 }

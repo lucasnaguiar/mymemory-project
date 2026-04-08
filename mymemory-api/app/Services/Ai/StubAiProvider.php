@@ -120,4 +120,10 @@ class StubAiProvider implements AiProviderInterface
             apiCreditsCost: 0.0,
         );
     }
+
+    public function generateSearchSynonyms(string $query): array
+    {
+        // Stub: return empty so search works without AI in dev
+        return [];
+    }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\Memo\AudioMemoController;
+use App\Http\Controllers\Api\V1\Memo\MemoController;
 use App\Http\Controllers\Api\V1\Memo\DocumentMemoController;
 use App\Http\Controllers\Api\V1\Memo\ImageMemoController;
 use App\Http\Controllers\Api\V1\Memo\TextMemoController;
@@ -76,7 +77,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/confirm', [DocumentMemoController::class, 'confirm'])->name('confirm');
     });
 
+    // Memos — list, search, CRUD
+    Route::prefix('memos')->name('memos.')->group(function () {
+        Route::get('/recent',             [MemoController::class, 'recent'])->name('recent');
+        Route::post('/search',            [MemoController::class, 'search'])->name('search');
+        Route::post('/search/synonyms',   [MemoController::class, 'synonyms'])->name('search.synonyms');
+        Route::get('/search/authors',     [MemoController::class, 'authors'])->name('search.authors');
+        Route::post('/upload',            [MemoController::class, 'upload'])->name('upload');
+        Route::get('/{id}',              [MemoController::class, 'show'])->name('show');
+        Route::get('/{id}/file',         [MemoController::class, 'file'])->name('file');
+        Route::patch('/{id}',            [MemoController::class, 'update'])->name('update');
+        Route::delete('/{id}',           [MemoController::class, 'destroy'])->name('destroy');
+    });
+
     // Etapa 2 — Auth routes added here
-    // Etapa 6+ — List/search/CRUD routes added progressively
+    // Etapa 7+ — Groups, context, admin routes added progressively
 
 });

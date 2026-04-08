@@ -168,26 +168,26 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 - [x] Progresso e mensagens de erro; respeitar `me/media-limits` na UI (tamanho/tipo antes do envio)
 - [x] Se a API usar job assíncrono: polling ou subscription conforme contrato exposto pelo back-end
 
-### Etapa 6 — Memos: upload genérico, listagem, busca e CRUD
+### Etapa 6 — Memos: upload genérico, listagem, busca e CRUD ✅
 
 **API**
 
-- [ ] `POST upload` (detecção de tipo)
-- [ ] `GET recent` com `limit` e `groupId`
-- [ ] `POST search` (AND/OR, filtros data/autor/grupo, highlight na resposta)
-- [ ] `POST search/synonyms` (LLM)
-- [ ] `GET search/authors`
-- [ ] `GET :id`, `GET :id/file`, `PATCH :id`, `DELETE :id` (soft delete)
-- [ ] Autorização: memos pessoais vs grupo (Policies + queries escopadas)
-- [ ] Evitar N+1 em listagens e busca
-- [ ] Feature tests de busca e permissões
+- [x] `POST upload` (detecção de tipo)
+- [x] `GET recent` com `limit` e `groupId`
+- [x] `POST search` (AND/OR, filtros data/autor/grupo, highlight na resposta)
+- [x] `POST search/synonyms` (LLM)
+- [x] `GET search/authors`
+- [x] `GET :id`, `GET :id/file`, `PATCH :id`, `DELETE :id` (soft delete)
+- [x] Autorização: memos pessoais vs grupo (Policies + queries escopadas)
+- [x] Evitar N+1 em listagens e busca
+- [x] Feature tests de busca e permissões
 
 **SPA (mymemory-spa)**
 
-- [ ] Home/dashboard com memos recentes (`GET recent`) e cartões alinhados a `spa-old` (`MemoCard*`, `RecentMemos`)
-- [ ] `MemoSearchPage`: busca com AND/OR, filtros, autores, sinônimos via API; renderizar **highlight** retornado pela API
-- [ ] `MemoEditPage`, exclusão (soft delete), download (`GET :id/file` ou rota de mídia final)
-- [ ] Upload genérico (`POST upload`) integrado ao fluxo de criação quando fizer sentido na UX
+- [x] Home/dashboard com memos recentes (`GET recent`) e cartões alinhados a `spa-old` (`MemoCard*`, `RecentMemos`)
+- [x] `MemoSearchPage`: busca com AND/OR, filtros, autores, sinônimos via API; renderizar **highlight** retornado pela API
+- [x] `MemoEditPage`, exclusão (soft delete), download (`GET :id/file` ou rota de mídia final)
+- [x] Upload genérico (`POST upload`) integrado ao fluxo de criação quando fizer sentido na UX
 
 ### Etapa 7 — Grupos, planos de grupo e convites
 

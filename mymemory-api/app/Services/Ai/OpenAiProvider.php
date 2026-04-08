@@ -226,6 +226,16 @@ class OpenAiProvider implements AiProviderInterface
         );
     }
 
+    public function generateSearchSynonyms(string $query): array
+    {
+        $prompt   = "Generate up to 6 synonyms or related search terms for the query: \"{$query}\". Return a JSON array of strings only.";
+        $response = $this->chat($prompt);
+        $text     = $response['choices'][0]['message']['content'] ?? '[]';
+
+        $decoded = json_decode($text, true);
+        return is_array($decoded) ? array_filter($decoded, 'is_string') : [];
+    }
+
     private function stripHtml(string $html): string
     {
         $text = preg_replace('/<script[^>]*>.*?<\/script>/si', '', $html) ?? $html;

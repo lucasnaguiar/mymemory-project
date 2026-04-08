@@ -21,6 +21,11 @@ class MemoResource extends JsonResource
             'ai_level'   => $this->ai_level,
             'group_id'   => $this->group_id,
             'user_id'    => $this->user_id,
+            'user'       => $this->whenLoaded('user', fn () => [
+                'id'    => $this->user->id,
+                'name'  => $this->user->name,
+                'email' => $this->user->email,
+            ]),
             'file'       => $this->whenLoaded('file', fn () => new MemoFileResource($this->file)),
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),

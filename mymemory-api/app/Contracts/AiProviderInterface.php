@@ -52,4 +52,12 @@ interface AiProviderInterface
      * @param  'none'|'basic'|'full'  $level
      */
     public function extractDocument(string $filePath, string $mimeType, string $level): AiOutputDTO;
+
+    /**
+     * Generate search synonym expansions for the given query.
+     * Returns an array of alternative terms or phrases.
+     *
+     * @return string[]
+     */
+    public function generateSearchSynonyms(string $query): array;
 }

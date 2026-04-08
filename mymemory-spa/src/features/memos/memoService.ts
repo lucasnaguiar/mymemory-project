@@ -170,7 +170,37 @@ export async function deleteMemo(id: number): Promise<void> {
   await http.delete(`/memos/${id}`);
 }
 
+/** @deprecated Use downloadMemoFile() for browser-credential-aware downloads */
 export function getMemoFileUrl(id: number): string {
   const base = import.meta.env.VITE_API_URL ?? 'http://localhost:7100/api/v1';
   return `${base}/memos/${id}/file`;
+}
+
+/**
+ * Build the URL for the protected media endpoint.
+ * Requires the Memo to have `file` eager-loaded with a valid storage_key.
+ * storage_key format: "memos/{authorId}/{memoId}/{fileName}"
+ */
+export function getProtectedMediaUrl(storageKey: string): string {
+  const base = import.meta.env.VITE_API_URL ?? 'http://localhost:7100/api/v1';
+  // Strip leading "memos/" and reconstruct as /media/{authorId}/{memoId}/{fileName}
+  const inner = storageKey.replace(/^memos\//, '');
+  return `${base}/media/${inner}`;
+}
+
+/**
+ * Download a memo file through the API (sends Sanctum session cookie via axios).
+ * Works across origins where direct <a href> navigation would not send cookies.
+ */
+export async function downloadMemoFile(memoId: number, filename: string): Promise<void> {
+  const response = await http.get(`/memos/${memoId}/file`, { responseType: 'blob' });
+  const blob = new Blob([response.data as BlobPart], { type: response.headers['content-type'] as string });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }

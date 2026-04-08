@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Memo } from '../../types/models';
-import { getMemoFileUrl } from '../../features/memos/memoService';
+import { downloadMemoFile } from '../../features/memos/memoService';
 
 const TYPE_ICON: Record<string, string> = {
   text:     '📝',
@@ -45,7 +46,18 @@ interface Props {
 }
 
 export default function MemoCard({ memo, highlightTerms = [], currentUserId, onDelete }: Props) {
+  const [downloading, setDownloading] = useState(false);
   const isOwner = currentUserId != null && memo.user_id === currentUserId;
+
+  async function handleDownload() {
+    if (!memo.file) return;
+    setDownloading(true);
+    try {
+      await downloadMemoFile(memo.id, memo.file.original_filename ?? 'arquivo');
+    } finally {
+      setDownloading(false);
+    }
+  }
   const headline = memo.title ?? memo.summary ?? memo.content ?? '';
   const bodyText  = memo.summary ?? memo.content ?? '';
   const kw: string[] = Array.isArray(memo.keywords) ? memo.keywords : [];
@@ -107,15 +119,15 @@ export default function MemoCard({ memo, highlightTerms = [], currentUserId, onD
 
       {/* File download */}
       {memo.file && (
-        <a
-          href={getMemoFileUrl(memo.id)}
-          className="text-xs text-gray-500 hover:text-indigo-600 inline-flex items-center gap-1"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={handleDownload}
+          disabled={downloading}
+          className="text-xs text-gray-500 hover:text-indigo-600 inline-flex items-center gap-1 disabled:opacity-50"
         >
-          <span>📎</span>
+          <span>{downloading ? '⏳' : '📎'}</span>
           <span className="truncate">{memo.file.original_filename ?? 'Arquivo'}</span>
-        </a>
+        </button>
       )}
 
       {/* Footer */}

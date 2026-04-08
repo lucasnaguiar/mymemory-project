@@ -2,10 +2,12 @@
 
 namespace App\Services\Memo;
 
+use App\Logging\AiOperationLogger;
 use App\Models\Memo;
 use App\Models\MemoFile;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class FileStorageService
 {
@@ -14,16 +16,23 @@ class FileStorageService
      */
     public function store(UploadedFile $file, Memo $memo): MemoFile
     {
-        $disk   = config('filesystems.default', 'local');
-        $prefix = "memos/{$memo->user_id}/{$memo->id}";
-        $name   = $file->hashName();
+        $disk       = config('filesystems.default', 'local');
+        $prefix     = "memos/{$memo->user_id}/{$memo->id}";
+        $name       = $file->hashName();
+        $storageKey = "{$prefix}/{$name}";
 
-        Storage::disk($disk)->putFileAs($prefix, $file, $name);
+        try {
+            Storage::disk($disk)->putFileAs($prefix, $file, $name);
+            AiOperationLogger::storageSuccess('store', $disk, $storageKey, (int) $file->getSize());
+        } catch (Throwable $e) {
+            AiOperationLogger::storageError('store', $disk, $storageKey, $e);
+            throw $e;
+        }
 
         return MemoFile::create([
             'memo_id'           => $memo->id,
             'disk'              => $disk,
-            'storage_key'       => "{$prefix}/{$name}",
+            'storage_key'       => $storageKey,
             'original_filename' => $file->getClientOriginalName(),
             'mime_type'         => $file->getMimeType() ?? 'application/octet-stream',
             'size_bytes'        => $file->getSize(),
@@ -44,6 +53,12 @@ class FileStorageService
      */
     public function delete(MemoFile $file): void
     {
-        Storage::disk($file->disk)->delete($file->storage_key);
+        try {
+            Storage::disk($file->disk)->delete($file->storage_key);
+            AiOperationLogger::storageSuccess('delete', $file->disk, $file->storage_key);
+        } catch (Throwable $e) {
+            AiOperationLogger::storageError('delete', $file->disk, $file->storage_key, $e);
+            throw $e;
+        }
     }
 }

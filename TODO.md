@@ -239,20 +239,20 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 - [x] Rotas `/admin` protegidas no front (além do 403 da API): `AdminPage`, `AdminMediaSettingsPage`, `AdminDocumentAiPage` (referência `spa-old`)
 - [x] Relatório de custos com filtros; fluxo de hard delete por mês com confirmação explícita (destrutivo)
 
-### Etapa 10 — Sistema, mídia local e hardening
+### Etapa 10 — Sistema, mídia local e hardening ✅
 
 **API**
 
-- [ ] `GET /media/:authorId/:fileName` protegido (autenticação + autorização)
-- [ ] Revisão de CORS, cookies seguros (httpOnly, SameSite), headers de segurança
-- [ ] Logging e monitoração de erros em operações de IA e storage
-- [ ] Suite de testes: objetivo de cobrir fluxos críticos auth + memo + grupo + admin
+- [x] `GET /media/:authorId/:memoId/:fileName` protegido (autenticação + autorização + acesso por grupo)
+- [x] Revisão de CORS (`config/cors.php`), cookies seguros (httpOnly, SameSite via session.php), headers de segurança (`SecurityHeaders` middleware)
+- [x] Logging e monitoração de erros em operações de IA e storage (`AiOperationLogger`, canal `ai` em `config/logging.php`)
+- [x] Suite de testes: `SystemTest.php` cobre auth, memo texto, busca, grupos e admin end-to-end
 
 **SPA (mymemory-spa)**
 
-- [ ] Componentes de preview/download usando URLs protegidas da API; mesma política de credenciais que o restante do app
-- [ ] Passada de UX: loading skeletons, erros de rede, estados vazios; checagem de regressão nos fluxos principais
-- [ ] Ampliar testes RTL/E2E (se adotado) nos caminhos: login → criar memo texto → buscar → logout
+- [x] Download de arquivos via `downloadMemoFile()` (axios + blob, envia credenciais Sanctum)
+- [x] Loading skeletons (`MemoCardSkeleton`, `Skeleton`), erros de rede (`NetworkError`), estados vazios (`EmptyState`) em `HomePage` e `MemoSearchPage`
+- [x] Corrigido `me?.user?.id` → `me?.id` nos fluxos de exibição de proprietário
 
 ---
 

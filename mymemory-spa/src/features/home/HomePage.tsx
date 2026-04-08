@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import MemoCard from '../../components/memo/MemoCard';
+import MemoCardSkeleton from '../../components/memo/MemoCardSkeleton';
 import MemoRegisterPanel from '../../components/memo/MemoRegisterPanel';
+import EmptyState from '../../components/ui/EmptyState';
+import NetworkError from '../../components/ui/NetworkError';
 import { useDeleteMemo, useRecentMemos } from '../memos/hooks/useMemos';
 import { useMe } from '../me/hooks/useMe';
 
@@ -10,7 +13,7 @@ export default function HomePage() {
   const { data: me } = useMe();
   const groupId = me?.workspace?.id ?? null;
 
-  const { data, isLoading, refetch } = useRecentMemos({ limit: 12, group_id: groupId });
+  const { data, isLoading, isError, refetch } = useRecentMemos({ limit: 12, group_id: groupId });
   const { mutate: doDelete, isPending: deleting } = useDeleteMemo();
 
   function handleMemoCreated() {
@@ -59,23 +62,35 @@ export default function HomePage() {
           </div>
 
           {isLoading && (
-            <p className="text-sm text-gray-400">Carregando…</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Array.from({ length: 6 }).map((_, i) => <MemoCardSkeleton key={i} />)}
+            </div>
           )}
 
-          {!isLoading && memos.length === 0 && (
-            <p className="text-sm text-gray-400">Nenhum memo ainda. Registre o primeiro acima.</p>
+          {isError && (
+            <NetworkError onRetry={() => void refetch()} />
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {memos.map((m) => (
-              <MemoCard
-                key={m.id}
-                memo={m}
-                currentUserId={me?.user?.id}
-                onDelete={handleDeleteRequest}
-              />
-            ))}
-          </div>
+          {!isLoading && !isError && memos.length === 0 && (
+            <EmptyState
+              icon="📝"
+              title="Nenhum memo ainda"
+              description="Registre o seu primeiro memo usando o painel acima."
+            />
+          )}
+
+          {!isLoading && !isError && memos.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {memos.map((m) => (
+                <MemoCard
+                  key={m.id}
+                  memo={m}
+                  currentUserId={me?.id}
+                  onDelete={handleDeleteRequest}
+                />
+              ))}
+            </div>
+          )}
         </section>
       </main>
 

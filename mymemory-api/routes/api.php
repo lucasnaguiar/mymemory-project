@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Admin\AdminDocumentAiController;
+use App\Http\Controllers\Api\V1\MediaController;
 use App\Http\Controllers\Api\V1\Admin\AdminMediaSettingsController;
 use App\Http\Controllers\Api\V1\Admin\AdminPlanController;
 use App\Http\Controllers\Api\V1\Admin\AdminReportController;
@@ -33,6 +34,12 @@ Route::get('/health', HealthController::class)->name('health');
 
 // Public — group plans listing
 Route::get('/group-plans', [GroupPlanController::class, 'index'])->name('group-plans.index');
+
+// Protected media serving (auth required + ownership/membership check inside controller)
+Route::middleware('auth:sanctum')
+    ->get('/media/{authorId}/{memoId}/{fileName}', [MediaController::class, 'serve'])
+    ->name('media.serve')
+    ->where(['authorId' => '[0-9]+', 'memoId' => '[0-9]+', 'fileName' => '.+']);
 
 // ---------------------------------------------------------------------------
 // Authenticated routes (Sanctum stateful guard)

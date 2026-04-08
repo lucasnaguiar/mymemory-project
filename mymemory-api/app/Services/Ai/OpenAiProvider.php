@@ -4,8 +4,10 @@ namespace App\Services\Ai;
 
 use App\Contracts\AiProviderInterface;
 use App\DTOs\Memo\AiOutputDTO;
+use App\Logging\AiOperationLogger;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
+use Throwable;
 
 /**
  * OpenAI-backed AI provider.
@@ -56,17 +58,30 @@ class OpenAiProvider implements AiProviderInterface
 
     private function chat(string $prompt): array
     {
-        $response = Http::withToken($this->apiKey)
-            ->post('https://api.openai.com/v1/chat/completions', [
-                'model'    => self::MODEL,
-                'messages' => [['role' => 'user', 'content' => $prompt]],
+        $start = microtime(true);
+        AiOperationLogger::aiStart('chat', ['model' => self::MODEL, 'prompt_len' => strlen($prompt)]);
+
+        try {
+            $response = Http::withToken($this->apiKey)
+                ->post('https://api.openai.com/v1/chat/completions', [
+                    'model'    => self::MODEL,
+                    'messages' => [['role' => 'user', 'content' => $prompt]],
+                ]);
+
+            if (!$response->successful()) {
+                throw new RuntimeException('OpenAI API error: ' . $response->body());
+            }
+
+            $data = $response->json();
+            AiOperationLogger::aiSuccess('chat', round((microtime(true) - $start) * 1000), [
+                'tokens' => $data['usage']['total_tokens'] ?? 0,
             ]);
 
-        if (!$response->successful()) {
-            throw new RuntimeException('OpenAI API error: ' . $response->body());
+            return $data;
+        } catch (Throwable $e) {
+            AiOperationLogger::aiError('chat', $e);
+            throw $e;
         }
-
-        return $response->json();
     }
 
     private function parseResponse(array $response, string $content, string $level): AiOutputDTO
@@ -172,38 +187,64 @@ class OpenAiProvider implements AiProviderInterface
 
     private function chatWithImage(string $prompt, string $dataUrl): array
     {
-        $response = Http::withToken($this->apiKey)
-            ->post('https://api.openai.com/v1/chat/completions', [
-                'model'    => 'gpt-4o',
-                'messages' => [[
-                    'role'    => 'user',
-                    'content' => [
-                        ['type' => 'text', 'text' => $prompt],
-                        ['type' => 'image_url', 'image_url' => ['url' => $dataUrl]],
-                    ],
-                ]],
+        $start = microtime(true);
+        AiOperationLogger::aiStart('chatWithImage', ['model' => 'gpt-4o']);
+
+        try {
+            $response = Http::withToken($this->apiKey)
+                ->post('https://api.openai.com/v1/chat/completions', [
+                    'model'    => 'gpt-4o',
+                    'messages' => [[
+                        'role'    => 'user',
+                        'content' => [
+                            ['type' => 'text', 'text' => $prompt],
+                            ['type' => 'image_url', 'image_url' => ['url' => $dataUrl]],
+                        ],
+                    ]],
+                ]);
+
+            if (!$response->successful()) {
+                throw new RuntimeException('OpenAI Vision error: ' . $response->body());
+            }
+
+            $data = $response->json();
+            AiOperationLogger::aiSuccess('chatWithImage', round((microtime(true) - $start) * 1000), [
+                'tokens' => $data['usage']['total_tokens'] ?? 0,
             ]);
 
-        if (!$response->successful()) {
-            throw new RuntimeException('OpenAI Vision error: ' . $response->body());
+            return $data;
+        } catch (Throwable $e) {
+            AiOperationLogger::aiError('chatWithImage', $e);
+            throw $e;
         }
-
-        return $response->json();
     }
 
     private function whisper(string $filePath): string
     {
-        $response = Http::withToken($this->apiKey)
-            ->attach('file', (string) file_get_contents($filePath), basename($filePath))
-            ->post('https://api.openai.com/v1/audio/transcriptions', [
-                'model' => 'whisper-1',
+        $start = microtime(true);
+        AiOperationLogger::aiStart('whisper', ['file' => basename($filePath)]);
+
+        try {
+            $response = Http::withToken($this->apiKey)
+                ->attach('file', (string) file_get_contents($filePath), basename($filePath))
+                ->post('https://api.openai.com/v1/audio/transcriptions', [
+                    'model' => 'whisper-1',
+                ]);
+
+            if (!$response->successful()) {
+                throw new RuntimeException('OpenAI Whisper error: ' . $response->body());
+            }
+
+            $text = $response->json('text', '');
+            AiOperationLogger::aiSuccess('whisper', round((microtime(true) - $start) * 1000), [
+                'transcription_len' => strlen($text),
             ]);
 
-        if (!$response->successful()) {
-            throw new RuntimeException('OpenAI Whisper error: ' . $response->body());
+            return $text;
+        } catch (Throwable $e) {
+            AiOperationLogger::aiError('whisper', $e);
+            throw $e;
         }
-
-        return $response->json('text', '');
     }
 
     private function parseMediaResponse(array $response, string $level): AiOutputDTO

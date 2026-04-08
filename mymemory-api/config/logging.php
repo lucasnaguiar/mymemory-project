@@ -127,6 +127,15 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        // Dedicated channel for AI operations and storage errors
+        'ai' => [
+            'driver' => 'daily',
+            'path'   => storage_path('logs/ai.log'),
+            'level'  => env('AI_LOG_LEVEL', 'debug'),
+            'days'   => 30,
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];

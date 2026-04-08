@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import MemoCard, { applyHighlight } from '../../../components/memo/MemoCard';
+import MemoCardSkeleton from '../../../components/memo/MemoCardSkeleton';
+import EmptyState from '../../../components/ui/EmptyState';
 import { useMe } from '../../me/hooks/useMe';
 import { useDeleteMemo, useFetchSynonyms, useSearchAuthors, useSearchMemos } from '../hooks/useMemos';
 import type { Memo } from '../../../types/models';
@@ -194,7 +196,15 @@ export default function MemoSearchPage() {
         </section>
 
         {/* Results */}
-        {searched && (
+        {searching && (
+          <section>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => <MemoCardSkeleton key={i} />)}
+            </div>
+          </section>
+        )}
+
+        {searched && !searching && (
           <section>
             <p className="text-sm text-gray-500 mb-3">
               {total === 0
@@ -202,13 +212,21 @@ export default function MemoSearchPage() {
                 : `${total} resultado${total !== 1 ? 's' : ''} encontrado${total !== 1 ? 's' : ''}.`}
             </p>
 
+            {total === 0 && (
+              <EmptyState
+                icon="🔍"
+                title="Nenhum resultado"
+                description="Tente outros termos ou expanda a busca com sinônimos."
+              />
+            )}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {results.map((m) => (
                 <MemoCard
                   key={m.id}
                   memo={m}
                   highlightTerms={highlightTerms}
-                  currentUserId={me?.user?.id}
+                  currentUserId={me?.id}
                   onDelete={setConfirmDeleteId}
                 />
               ))}

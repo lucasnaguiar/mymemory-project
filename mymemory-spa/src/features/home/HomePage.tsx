@@ -37,6 +37,9 @@ export default function HomePage() {
           <Link to="/grupos/novo" className="text-gray-600 hover:text-indigo-600">Criar grupo</Link>
           <Link to="/memo-context" className="text-gray-600 hover:text-indigo-600">Contexto</Link>
           <Link to="/preferences" className="text-gray-600 hover:text-indigo-600">Preferências</Link>
+          {me?.role === 'admin' && (
+            <Link to="/admin" className="text-gray-600 hover:text-indigo-600 font-medium">Admin</Link>
+          )}
         </nav>
       </header>
 

@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\AdminDocumentAiController;
+use App\Http\Controllers\Api\V1\Admin\AdminMediaSettingsController;
+use App\Http\Controllers\Api\V1\Admin\AdminPlanController;
+use App\Http\Controllers\Api\V1\Admin\AdminReportController;
 use App\Http\Controllers\Api\V1\Group\GroupController;
 use App\Http\Controllers\Api\V1\Group\GroupPlanController;
 use App\Http\Controllers\Api\V1\MemoContext\MemoContextController;
@@ -122,7 +126,28 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/fields/{id}',                             [MemoContextController::class, 'deleteField'])->name('fields.destroy');
     });
 
+    // Admin routes (admin middleware stacked)
+    Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+        // Subscription plans CRUD
+        Route::get('/subscription-plans',         [AdminPlanController::class, 'index'])->name('plans.index');
+        Route::post('/subscription-plans',        [AdminPlanController::class, 'store'])->name('plans.store');
+        Route::patch('/subscription-plans/{id}',  [AdminPlanController::class, 'update'])->name('plans.update');
+        Route::delete('/subscription-plans/{id}', [AdminPlanController::class, 'destroy'])->name('plans.destroy');
+
+        // Media settings per plan (upsert)
+        Route::get('/subscription-plans/{id}/media-settings', [AdminMediaSettingsController::class, 'index'])->name('media-settings.index');
+        Route::put('/subscription-plans/{id}/media-settings', [AdminMediaSettingsController::class, 'upsert'])->name('media-settings.upsert');
+
+        // Document AI routing singleton
+        Route::get('/document-ai-routing', [AdminDocumentAiController::class, 'show'])->name('document-ai-routing.show');
+        Route::put('/document-ai-routing', [AdminDocumentAiController::class, 'update'])->name('document-ai-routing.update');
+
+        // Reports & soft-delete management
+        Route::get('/cost-report',                                     [AdminReportController::class, 'costReport'])->name('cost-report');
+        Route::get('/soft-deleted-memos/monthly-summary',              [AdminReportController::class, 'softDeletedSummary'])->name('soft-deleted.summary');
+        Route::delete('/soft-deleted-memos/hard-delete-month',         [AdminReportController::class, 'hardDeleteMonth'])->name('soft-deleted.hard-delete');
+    });
+
     // Etapa 2 — Auth routes added here
-    // Etapa 9+ — Admin routes added progressively
 
 });

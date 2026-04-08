@@ -222,22 +222,22 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 - [x] `MemoContextPage`: árvore e CRUD completo consumindo a API; `editor-meta` para habilitar/desabilitar ações na UI
 - [x] UX alinhada a `spa-old/src/pages/MemoContextPage.tsx` (referência)
 
-### Etapa 9 — Admin (`role admin`)
+### Etapa 9 — Admin (`role admin`) ✅
 
 **API**
 
-- [ ] CRUD `subscription-plans`
-- [ ] `media-settings` por plano (GET/PUT)
-- [ ] `document-ai-routing` (GET/PUT)
-- [ ] `cost-report` (query params período, tipo, plano)
-- [ ] `soft-deleted-memos/monthly-summary` + `hard-delete-month`
-- [ ] Middleware/gate `admin` + Policies
-- [ ] Feature tests restritos a admin
+- [x] CRUD `subscription-plans`
+- [x] `media-settings` por plano (GET/PUT)
+- [x] `document-ai-routing` (GET/PUT)
+- [x] `cost-report` (query params período, tipo, plano)
+- [x] `soft-deleted-memos/monthly-summary` + `hard-delete-month`
+- [x] Middleware/gate `admin` + Policies
+- [x] Feature tests restritos a admin
 
 **SPA (mymemory-spa)**
 
-- [ ] Rotas `/admin` protegidas no front (além do 403 da API): `AdminPage`, `AdminMediaSettingsPage`, `AdminDocumentAiPage` (referência `spa-old`)
-- [ ] Relatório de custos com filtros; fluxo de hard delete por mês com confirmação explícita (destrutivo)
+- [x] Rotas `/admin` protegidas no front (além do 403 da API): `AdminPage`, `AdminMediaSettingsPage`, `AdminDocumentAiPage` (referência `spa-old`)
+- [x] Relatório de custos com filtros; fluxo de hard delete por mês com confirmação explícita (destrutivo)
 
 ### Etapa 10 — Sistema, mídia local e hardening
 

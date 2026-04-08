@@ -13,7 +13,10 @@ const MemoEditPage           = lazy(() => import('../features/memos/pages/MemoEd
 const GroupCreatePage        = lazy(() => import('../features/groups/pages/GroupCreatePage'));
 const GroupOwnerPanelPage    = lazy(() => import('../features/groups/pages/GroupOwnerPanelPage'));
 const GroupInviteAcceptPage  = lazy(() => import('../features/groups/pages/GroupInviteAcceptPage'));
-const MemoContextPage        = lazy(() => import('../features/memoContext/pages/MemoContextPage'));
+const MemoContextPage           = lazy(() => import('../features/memoContext/pages/MemoContextPage'));
+const AdminPage                 = lazy(() => import('../features/admin/pages/AdminPage'));
+const AdminMediaSettingsPage    = lazy(() => import('../features/admin/pages/AdminMediaSettingsPage'));
+const AdminDocumentAiPage       = lazy(() => import('../features/admin/pages/AdminDocumentAiPage'));
 
 /**
  * Route map — mymemory-spa
@@ -85,4 +88,9 @@ export const routes: RouteObject[] = [
 
   // Memo context
   { path: '/memo-context', element: <MemoContextPage /> },
+
+  // Admin (role: admin — additional guard inside each page)
+  { path: '/admin',                element: <AdminPage /> },
+  { path: '/admin/media-settings', element: <AdminMediaSettingsPage /> },
+  { path: '/admin/document-ai',    element: <AdminDocumentAiPage /> },
 ];

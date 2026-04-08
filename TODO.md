@@ -151,22 +151,22 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 - [x] Páginas de revisão e painel inicial alinhados a `MemoTextReviewPage`, fluxo URL e componentes de revisão em `spa-old` (`MemoReviewChrome`, `MemoRegisterPanel`, etc. como referência visual/comportamental)
 - [x] Services/hooks dedicados; estados de loading/erro e desabilitar ações quando limites do plano exigirem (dados de `me/usage` / preferências quando aplicável)
 
-### Etapa 5 — Memos: imagem, áudio, vídeo e documento
+### Etapa 5 — Memos: imagem, áudio, vídeo e documento ✅
 
 **API**
 
-- [ ] Upload, storage (S3 ou disco local conforme config), validação de tamanho/tipo por plano
-- [ ] Imagem: OCR + pipeline visão + resumo (services separados, DTOs entre etapas)
-- [ ] Áudio/Vídeo: Whisper + chunking quando aplicável
-- [ ] Documento: PDF/DOCX/MSG/EML → extração + resumo; roteamento JSON admin
-- [ ] `process` e `confirm` para cada tipo; tratamento de jobs assíncronos se necessário (fila + status)
-- [ ] Feature tests principais; mocks de provedores externos
+- [x] Upload, storage (S3 ou disco local conforme config), validação de tamanho/tipo por plano
+- [x] Imagem: OCR + pipeline visão + resumo (services separados, DTOs entre etapas)
+- [x] Áudio/Vídeo: Whisper + chunking quando aplicável
+- [x] Documento: PDF/DOCX/MSG/EML → extração + resumo; roteamento JSON admin
+- [x] `process` e `confirm` para cada tipo; tratamento de jobs assíncronos se necessário (fila + status)
+- [x] Feature tests principais; mocks de provedores externos
 
 **SPA (mymemory-spa)**
 
-- [ ] Upload multipart tipado; páginas de revisão: imagem, áudio, vídeo, documento (`spa-old`: `MemoImageReviewPage`, `MemoAudioReviewPage`, `MemoVideoReviewPage`, `MemoDocumentReviewPage`)
-- [ ] Progresso e mensagens de erro; respeitar `me/media-limits` na UI (tamanho/tipo antes do envio)
-- [ ] Se a API usar job assíncrono: polling ou subscription conforme contrato exposto pelo back-end
+- [x] Upload multipart tipado; páginas de revisão: imagem, áudio, vídeo, documento (`spa-old`: `MemoImageReviewPage`, `MemoAudioReviewPage`, `MemoVideoReviewPage`, `MemoDocumentReviewPage`)
+- [x] Progresso e mensagens de erro; respeitar `me/media-limits` na UI (tamanho/tipo antes do envio)
+- [x] Se a API usar job assíncrono: polling ou subscription conforme contrato exposto pelo back-end
 
 ### Etapa 6 — Memos: upload genérico, listagem, busca e CRUD
 

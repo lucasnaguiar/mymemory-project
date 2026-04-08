@@ -2,8 +2,12 @@
 
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\MeController;
+use App\Http\Controllers\Api\V1\Memo\AudioMemoController;
+use App\Http\Controllers\Api\V1\Memo\DocumentMemoController;
+use App\Http\Controllers\Api\V1\Memo\ImageMemoController;
 use App\Http\Controllers\Api\V1\Memo\TextMemoController;
 use App\Http\Controllers\Api\V1\Memo\UrlMemoController;
+use App\Http\Controllers\Api\V1\Memo\VideoMemoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,7 +52,31 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/',        [UrlMemoController::class, 'create'])->name('create');
     });
 
+    // Memos — image
+    Route::prefix('memos/image')->name('memos.image.')->group(function () {
+        Route::post('/process', [ImageMemoController::class, 'process'])->name('process');
+        Route::post('/confirm', [ImageMemoController::class, 'confirm'])->name('confirm');
+    });
+
+    // Memos — audio
+    Route::prefix('memos/audio')->name('memos.audio.')->group(function () {
+        Route::post('/process', [AudioMemoController::class, 'process'])->name('process');
+        Route::post('/confirm', [AudioMemoController::class, 'confirm'])->name('confirm');
+    });
+
+    // Memos — video
+    Route::prefix('memos/video')->name('memos.video.')->group(function () {
+        Route::post('/process', [VideoMemoController::class, 'process'])->name('process');
+        Route::post('/confirm', [VideoMemoController::class, 'confirm'])->name('confirm');
+    });
+
+    // Memos — document
+    Route::prefix('memos/document')->name('memos.document.')->group(function () {
+        Route::post('/process', [DocumentMemoController::class, 'process'])->name('process');
+        Route::post('/confirm', [DocumentMemoController::class, 'confirm'])->name('confirm');
+    });
+
     // Etapa 2 — Auth routes added here
-    // Etapa 5+ — Image/Audio/Video/Document routes added progressively
+    // Etapa 6+ — List/search/CRUD routes added progressively
 
 });

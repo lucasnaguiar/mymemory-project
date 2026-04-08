@@ -85,6 +85,13 @@ export interface CreateUrlPayload {
   group_id?: number | null;
 }
 
+export interface ConfirmMediaPayload {
+  memo_id: number;
+  title?: string;
+  summary?: string;
+  keywords?: string[];
+}
+
 export interface UpdateMemoPayload {
   title?: string;
   content?: string;

@@ -98,6 +98,134 @@ class OpenAiProvider implements AiProviderInterface
         return $response->body();
     }
 
+    // -------------------------------------------------------------------------
+    // Media methods — Etapa 5
+    // -------------------------------------------------------------------------
+
+    public function analyzeImage(string $filePath, string $level): AiOutputDTO
+    {
+        if ($level === 'none') {
+            return AiOutputDTO::empty();
+        }
+
+        $base64   = base64_encode((string) file_get_contents($filePath));
+        $mimeType = mime_content_type($filePath) ?: 'image/jpeg';
+        $dataUrl  = "data:{$mimeType};base64,{$base64}";
+
+        $prompt = $level === 'basic'
+            ? 'Describe this image briefly in one sentence and list up to 5 keywords as comma-separated values.'
+            : 'Analyze this image: describe it concisely (max 300 chars), extract any text (OCR), and list up to 8 keywords. Respond in JSON: {"summary":"...","ocr":"...","keywords":["..."]}.';
+
+        $response = $this->chatWithImage($prompt, $dataUrl);
+
+        return $this->parseMediaResponse($response, $level);
+    }
+
+    public function transcribeAudio(string $filePath, string $level): AiOutputDTO
+    {
+        if ($level === 'none') {
+            return AiOutputDTO::empty();
+        }
+
+        $transcription = $this->whisper($filePath);
+
+        if ($level === 'basic') {
+            $keywords = array_slice(explode(' ', $transcription), 0, 8);
+            return new AiOutputDTO('', $keywords, $transcription, 0.0);
+        }
+
+        $summaryOutput = $this->summarizeText($transcription, 'full');
+        return new AiOutputDTO(
+            summary: $summaryOutput->summary,
+            keywords: $summaryOutput->keywords,
+            extractedContent: $transcription,
+            apiCreditsCost: $summaryOutput->apiCreditsCost,
+        );
+    }
+
+    public function transcribeVideo(string $filePath, string $level): AiOutputDTO
+    {
+        // Same pipeline as audio (OpenAI Whisper supports video files too)
+        return $this->transcribeAudio($filePath, $level);
+    }
+
+    public function extractDocument(string $filePath, string $mimeType, string $level): AiOutputDTO
+    {
+        if ($level === 'none') {
+            return AiOutputDTO::empty();
+        }
+
+        // Attempt plain text read (works for .txt, .eml, .msg with basic parsing)
+        $text = @file_get_contents($filePath);
+        if (!$text) {
+            return AiOutputDTO::empty();
+        }
+
+        // Strip binary for PDF/DOCX — the real extractor (Etapa 5+) does this properly
+        $text = preg_replace('/[^\x09\x0A\x0D\x20-\x7E\x80-\xFF]/', ' ', $text) ?? $text;
+        $text = mb_substr($text, 0, 8000);
+
+        return $this->summarizeText($text, $level);
+    }
+
+    // -------------------------------------------------------------------------
+
+    private function chatWithImage(string $prompt, string $dataUrl): array
+    {
+        $response = Http::withToken($this->apiKey)
+            ->post('https://api.openai.com/v1/chat/completions', [
+                'model'    => 'gpt-4o',
+                'messages' => [[
+                    'role'    => 'user',
+                    'content' => [
+                        ['type' => 'text', 'text' => $prompt],
+                        ['type' => 'image_url', 'image_url' => ['url' => $dataUrl]],
+                    ],
+                ]],
+            ]);
+
+        if (!$response->successful()) {
+            throw new RuntimeException('OpenAI Vision error: ' . $response->body());
+        }
+
+        return $response->json();
+    }
+
+    private function whisper(string $filePath): string
+    {
+        $response = Http::withToken($this->apiKey)
+            ->attach('file', (string) file_get_contents($filePath), basename($filePath))
+            ->post('https://api.openai.com/v1/audio/transcriptions', [
+                'model' => 'whisper-1',
+            ]);
+
+        if (!$response->successful()) {
+            throw new RuntimeException('OpenAI Whisper error: ' . $response->body());
+        }
+
+        return $response->json('text', '');
+    }
+
+    private function parseMediaResponse(array $response, string $level): AiOutputDTO
+    {
+        $text   = $response['choices'][0]['message']['content'] ?? '';
+        $tokens = $response['usage']['total_tokens'] ?? 0;
+        $cost   = ($tokens / 1000) * self::CREDITS_PER_1K_TOKENS;
+
+        if ($level === 'basic') {
+            $keywords = array_map('trim', explode(',', $text));
+            return new AiOutputDTO('', array_filter($keywords), '', $cost);
+        }
+
+        $decoded = json_decode($text, true);
+        return new AiOutputDTO(
+            summary: $decoded['summary'] ?? mb_substr($text, 0, 300),
+            keywords: $decoded['keywords'] ?? [],
+            extractedContent: $decoded['ocr'] ?? '',
+            apiCreditsCost: $cost,
+        );
+    }
+
     private function stripHtml(string $html): string
     {
         $text = preg_replace('/<script[^>]*>.*?<\/script>/si', '', $html) ?? $html;

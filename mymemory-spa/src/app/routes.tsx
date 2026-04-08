@@ -1,8 +1,12 @@
 import { lazy } from 'react';
 import { Navigate, type RouteObject } from 'react-router-dom';
 
-const UserPreferencesPage = lazy(() => import('../features/me/pages/UserPreferencesPage'));
-const MemoTextReviewPage = lazy(() => import('../features/memos/pages/MemoTextReviewPage'));
+const UserPreferencesPage    = lazy(() => import('../features/me/pages/UserPreferencesPage'));
+const MemoTextReviewPage     = lazy(() => import('../features/memos/pages/MemoTextReviewPage'));
+const MemoImageReviewPage    = lazy(() => import('../features/memos/pages/MemoImageReviewPage'));
+const MemoAudioReviewPage    = lazy(() => import('../features/memos/pages/MemoAudioReviewPage'));
+const MemoVideoReviewPage    = lazy(() => import('../features/memos/pages/MemoVideoReviewPage'));
+const MemoDocumentReviewPage = lazy(() => import('../features/memos/pages/MemoDocumentReviewPage'));
 
 /**
  * Route map — mymemory-spa
@@ -53,8 +57,12 @@ export const routes: RouteObject[] = [
   // Me / account
   { path: '/preferences', element: <UserPreferencesPage /> },
 
-  // Memos — review pages (text/url share the same review component)
-  { path: '/memos/text/review', element: <MemoTextReviewPage /> },
+  // Memos — review pages
+  { path: '/memos/text/review',     element: <MemoTextReviewPage /> },
+  { path: '/memos/image/review',    element: <MemoImageReviewPage /> },
+  { path: '/memos/audio/review',    element: <MemoAudioReviewPage /> },
+  { path: '/memos/video/review',    element: <MemoVideoReviewPage /> },
+  { path: '/memos/document/review', element: <MemoDocumentReviewPage /> },
 
   // Fallback — redirect everything to health until more pages are implemented
   { path: '*', element: <Navigate to="/dev/health" replace /> },

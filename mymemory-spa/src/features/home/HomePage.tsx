@@ -34,6 +34,7 @@ export default function HomePage() {
         <h1 className="text-xl font-bold text-gray-900">MyMemory</h1>
         <nav className="flex items-center gap-4 text-sm">
           <Link to="/buscar" className="text-gray-600 hover:text-indigo-600">Buscar</Link>
+          <Link to="/grupos/novo" className="text-gray-600 hover:text-indigo-600">Criar grupo</Link>
           <Link to="/preferences" className="text-gray-600 hover:text-indigo-600">Preferências</Link>
         </nav>
       </header>

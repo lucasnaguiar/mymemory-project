@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Contracts\AiProviderInterface;
+use App\Models\Group;
 use App\Models\Memo;
+use App\Policies\GroupPolicy;
 use App\Policies\MemoPolicy;
 use App\Services\Ai\OpenAiProvider;
 use App\Services\Ai\StubAiProvider;
@@ -29,5 +31,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(Memo::class, MemoPolicy::class);
+        Gate::policy(Group::class, GroupPolicy::class);
     }
 }

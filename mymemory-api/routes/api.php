@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Group\GroupController;
+use App\Http\Controllers\Api\V1\Group\GroupPlanController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\Memo\AudioMemoController;
@@ -23,6 +25,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/health', HealthController::class)->name('health');
+
+// Public — group plans listing
+Route::get('/group-plans', [GroupPlanController::class, 'index'])->name('group-plans.index');
 
 // ---------------------------------------------------------------------------
 // Authenticated routes (Sanctum stateful guard)
@@ -90,7 +95,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}',           [MemoController::class, 'destroy'])->name('destroy');
     });
 
+    // Groups
+    Route::post('/groups',                        [GroupController::class, 'store'])->name('groups.store');
+    Route::get('/groups/{id}/owner-panel',        [GroupController::class, 'ownerPanel'])->name('groups.owner-panel');
+    Route::post('/groups/{id}/invites',           [GroupController::class, 'invite'])->name('groups.invites.store');
+    Route::post('/group-invites/accept',          [GroupController::class, 'acceptInvite'])->name('group-invites.accept');
+
     // Etapa 2 — Auth routes added here
-    // Etapa 7+ — Groups, context, admin routes added progressively
+    // Etapa 8+ — Context, admin routes added progressively
 
 });

@@ -189,24 +189,24 @@ Endpoints: `individual-plans`, `register`, `login`, `logout`, `verify-email`, `f
 - [x] `MemoEditPage`, exclusão (soft delete), download (`GET :id/file` ou rota de mídia final)
 - [x] Upload genérico (`POST upload`) integrado ao fluxo de criação quando fizer sentido na UX
 
-### Etapa 7 — Grupos, planos de grupo e convites
+### Etapa 7 — Grupos, planos de grupo e convites ✅
 
 **API**
 
-- [ ] `GET group-plans` (público)
-- [ ] `POST groups` (plano de grupo)
-- [ ] `GET groups/:id/owner-panel`
-- [ ] `POST groups/:id/invites` (papel editor/viewer)
-- [ ] `POST group-invites/accept` (token)
-- [ ] Policies para dono vs membro vs viewer
-- [ ] Feature tests
+- [x] `GET group-plans` (público)
+- [x] `POST groups` (plano de grupo)
+- [x] `GET groups/:id/owner-panel`
+- [x] `POST groups/:id/invites` (papel editor/viewer)
+- [x] `POST group-invites/accept` (token)
+- [x] Policies para dono vs membro vs viewer
+- [x] Feature tests
 
 **SPA (mymemory-spa)**
 
-- [ ] `GroupCreatePage` com `GET group-plans` + `POST groups`
-- [ ] `GroupOwnerPanelPage`: painel do dono e convites (`spa-old` como referência)
-- [ ] `GroupInviteAcceptPage`: aceite via token na URL/query
-- [ ] Garantir que o workspace (Etapa 3) reflete grupos disponíveis após criar/aceitar
+- [x] `GroupCreatePage` com `GET group-plans` + `POST groups`
+- [x] `GroupOwnerPanelPage`: painel do dono e convites (`spa-old` como referência)
+- [x] `GroupInviteAcceptPage`: aceite via token na URL/query
+- [x] Garantir que o workspace (Etapa 3) reflete grupos disponíveis após criar/aceitar
 
 ### Etapa 8 — Contexto de memo (categorias / subcategorias / campos)
 
